@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton : MonoBehaviour {
+public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+{
+    public static T Instance { get; private set; }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    protected virtual void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+
+        Instance = this as T;
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 }
