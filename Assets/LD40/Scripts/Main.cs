@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Main : Singleton<Main> {
+
     public static RaycastHit2D[] s_raycastHits = new RaycastHit2D[100];
 
     public CameraManager m_cameraManager;
@@ -21,7 +22,11 @@ public class Main : Singleton<Main> {
         base.Awake();
 
         m_interactionPlane = new Plane(Vector3.back, 0);
-        m_itchPoints.AddRange(m_rashes);
+        for(int i = 0; i < m_rashes.Count; ++i)
+        {
+            AddItch(m_rashes[i]);
+        }
+
     }
 
     protected void Update()
@@ -57,6 +62,19 @@ public class Main : Singleton<Main> {
                     if(m_itchPoints.Contains(rash))
                     {
                         // give sanity
+                        rash.ReduceItch();
+                        if(rash.m_itchAmount <= 0)
+                        {
+                            m_itchPoints.Remove(rash);
+
+                            // pick new itch point
+                            AddItch(m_rashes[Random.Range(0, m_rashes.Count)]);
+                        }
+                        else
+                        {
+                            // give itch relief feedback
+
+                        }
                     }
                     else
                     {
@@ -79,6 +97,12 @@ public class Main : Singleton<Main> {
             m_scratchedThisFrame[i].m_scratchedThisFrame = false;
         }
         m_scratchedThisFrame.Clear();
+    }
+
+    public void AddItch(Rash rash)
+    {
+        rash.RandomizeItchAmount();
+        m_itchPoints.Add(rash);
     }
 
     public void Scratch(Rash rash)

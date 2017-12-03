@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class Rash : MonoBehaviour
 {
+    public const int MIN_ITCH_AMOUNT = 3;
+    public const int MAX_ITCH_AMOUNT = 10;
+
     public const int MIN_SPREAD_SCRATCHES = 1;
     public const int MAX_SPREAD_SCRATCHES = 1;
+
     public const float RASH_GROWTH_AMOUNT = 0.1f;
     public const float MAX_SIZE = 2.0f;
 
     public bool m_scratchedThisFrame = false;
 
     public SpriteRenderer[] m_sprites;
+
+    public int m_itchAmount = 0;
 
     protected int m_overScratchCount = 0;
     protected int m_nextSpreadCountRequirement = 0;
@@ -27,6 +33,20 @@ public class Rash : MonoBehaviour
     public void RandomizeNextSpreadRequirement()
     {
         m_nextSpreadCountRequirement = Random.Range(MIN_SPREAD_SCRATCHES, MAX_SPREAD_SCRATCHES);
+    }
+
+    public void RandomizeItchAmount()
+    {
+        m_itchAmount = Random.Range(MIN_ITCH_AMOUNT, MAX_ITCH_AMOUNT);
+    }
+
+    public void ReduceItch()
+    {
+        m_itchAmount--;
+        if(m_itchAmount <= 0)
+        {
+            m_itchAmount = 0;
+        }
     }
 
     public void Scratch()
