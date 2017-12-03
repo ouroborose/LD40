@@ -8,7 +8,7 @@ public class Main : Singleton<Main> {
 
     public CameraManager m_cameraManager;
     public Hand m_hand;
-
+    public float m_scratchDeltaThreshold = 0.25f;
     public GameObject m_rashPrefab;
 
     public List<Rash> m_rashes = new List<Rash>();
@@ -16,6 +16,9 @@ public class Main : Singleton<Main> {
     protected Plane m_interactionPlane;
     protected List<Rash> m_scratchedThisFrame = new List<Rash>();
     protected List<Rash> m_itchPoints = new List<Rash>();
+
+    protected float m_scratchDelta = 0;
+    protected Vector3 m_lastScratchPos;
 
     override protected void Awake()
     {
@@ -47,48 +50,25 @@ public class Main : Singleton<Main> {
 
         if (Input.GetMouseButtonDown(0))
         {
-            m_hand.Scratch();
-            int hitCount = Physics2D.RaycastNonAlloc(m_hand.transform.position, Vector2.zero, s_raycastHits);
-            int rashHits = 0;
-            for (int i = 0; i < hitCount; ++i)
+            m_hand.StartScratching();
+            m_lastScratchPos = mouseRay.GetPoint(d);
+            m_scratchDelta = 0;
+            HandleScratch(m_lastScratchPos);
+        }
+        else if(Input.GetMouseButton(0))
+        {
+            Vector3 currentScratchPos = mouseRay.GetPoint(d);
+            m_scratchDelta += Vector3.Distance(m_lastScratchPos, currentScratchPos);
+            if (m_scratchDelta >= m_scratchDeltaThreshold)
             {
-                RaycastHit2D hit = s_raycastHits[i];
-                Rash rash = hit.collider.GetComponentInParent<Rash>();
-                if(rash != null)
-                {
-                    rashHits++;
-                    Scratch(rash);
-
-                    if(m_itchPoints.Contains(rash))
-                    {
-                        // give sanity
-                        rash.ReduceItch();
-                        if(rash.m_itchAmount <= 0)
-                        {
-                            m_itchPoints.Remove(rash);
-
-                            // pick new itch point
-                            AddItch(m_rashes[Random.Range(0, m_rashes.Count)]);
-                        }
-                        else
-                        {
-                            // give itch relief feedback
-
-                        }
-                    }
-                    else
-                    {
-                        // give itch point hint
-                    }
-                }
+                HandleScratch(currentScratchPos);
+                m_scratchDelta = 0;
             }
-
-            if(rashHits <= 0 && hitCount > 0)
-            {
-                // spawn new rash here
-                SpawnRash(mouseRay.GetPoint(d));
-            }
-
+            m_lastScratchPos = currentScratchPos;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            m_hand.StopScratching();
         }
 
         // clear stratch state
@@ -97,6 +77,51 @@ public class Main : Singleton<Main> {
             m_scratchedThisFrame[i].m_scratchedThisFrame = false;
         }
         m_scratchedThisFrame.Clear();
+    }
+
+    public void HandleScratch(Vector3 pos)
+    {
+        m_hand.DoScratchFeedback();
+        int hitCount = Physics2D.RaycastNonAlloc(pos, Vector2.zero, s_raycastHits);
+        int rashHits = 0;
+        for (int i = 0; i < hitCount; ++i)
+        {
+            RaycastHit2D hit = s_raycastHits[i];
+            Rash rash = hit.collider.GetComponentInParent<Rash>();
+            if (rash != null)
+            {
+                rashHits++;
+                Scratch(rash);
+
+                if (m_itchPoints.Contains(rash))
+                {
+                    // give sanity
+                    rash.ReduceItch();
+                    if (rash.m_itchAmount <= 0)
+                    {
+                        m_itchPoints.Remove(rash);
+
+                        // pick new itch point
+                        AddItch(m_rashes[Random.Range(0, m_rashes.Count)]);
+                    }
+                    else
+                    {
+                        // give itch relief feedback
+
+                    }
+                }
+                else
+                {
+                    // give itch point hint
+                }
+            }
+        }
+
+        if (rashHits <= 0 && hitCount > 0)
+        {
+            // spawn new rash here
+            SpawnRash(pos);
+        }
     }
 
     public void AddItch(Rash rash)
