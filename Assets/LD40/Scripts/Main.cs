@@ -141,7 +141,6 @@ public class Main : Singleton<Main> {
 
     public void HandleScratch(Vector3 pos)
     {
-        m_hand.DoScratchFeedback();
         int hitCount = Physics2D.RaycastNonAlloc(pos, Vector2.zero, s_raycastHits);
         int rashHits = 0;
         bool itchHit = false;
@@ -182,6 +181,11 @@ public class Main : Singleton<Main> {
                     GiveHint(pos);
                 }
             }
+        }
+
+        if(hitCount > 0)
+        {
+            m_hand.DoScratchFeedback();
         }
 
         if (rashHits <= 0 && hitCount > 0)

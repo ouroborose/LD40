@@ -7,6 +7,7 @@ using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
+    public const float TEXT_HIDE_THRESHOLD = -0.5f;
     public Slider m_sanitySlider;
 
     public RectTransform m_textContainer;
@@ -57,7 +58,14 @@ public class UIManager : MonoBehaviour
 
     protected void Update()
     {
-        m_feedbackShowTimer -= Time.deltaTime;
+        if(m_lastFeedBackType != FeedBackType.NONE && m_feedbackShowTimer > TEXT_HIDE_THRESHOLD)
+        {
+            m_feedbackShowTimer -= Time.deltaTime;
+            if (m_feedbackShowTimer <= TEXT_HIDE_THRESHOLD)
+            {
+                m_textContainer.DOScale(Vector3.zero, 0.25f).SetEase(Ease.InBack);
+            }
+        }
         
         if(m_lastFeedBackType != FeedBackType.ITCH_FEEDBACK || m_feedbackShowTimer <= 0)
         {

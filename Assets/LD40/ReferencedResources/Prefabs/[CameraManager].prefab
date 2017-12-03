@@ -81,7 +81,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.24313726, g: 0.28627452, b: 0.29411766, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -125,11 +125,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b172786969db6384a8382647020e3f2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxPanSpeed: 0.25
+  m_maxPanSpeed: 0.5
   m_panUpDownThreshold: 0.1
   m_panLeftRightThreshold: 0.1
   m_shakeIntensity: 2
-  m_cameraBounds: {x: 25, y: 20, z: 0}
+  m_cameraBounds: {x: 20, y: 39.03, z: 0}
 --- !u!124 &124532566508016456
 Behaviour:
   m_ObjectHideFlags: 1

@@ -8,6 +8,7 @@ public class Hand : MonoBehaviour {
 
     public ParticleSystem m_particles;
     public Animator m_animator;
+    public GameObject m_trails;
 
     protected void Awake()
     {
@@ -25,15 +26,17 @@ public class Hand : MonoBehaviour {
     public void StartScratching()
     {
         m_animator.SetBool(ANIM_ID_SCRATCH, true);
+        m_trails.SetActive(true);
     }
 
     public void DoScratchFeedback()
     {
-        m_particles.Emit(Random.Range(10, 20));
+        m_particles.Emit(Random.Range(5, 10));
     }
 
     public void StopScratching()
     {
         m_animator.SetBool(ANIM_ID_SCRATCH, false);
+        m_trails.SetActive(false);
     }
 }
