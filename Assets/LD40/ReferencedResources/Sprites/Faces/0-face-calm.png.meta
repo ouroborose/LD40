@@ -1,13 +1,9 @@
 fileFormatVersion: 2
-guid: c08bac46e2242234381a4a0ee3ec5dd1
-timeCreated: 1512297830
+guid: 98b8800fe095f3f45b9c919abbafd74d
+timeCreated: 1512338186
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: frame_0
-    21300002: frame_1
-    21300004: frame_2
-    21300006: frame_3
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -44,7 +40,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -107,66 +103,10 @@ TextureImporter:
     overridden: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: frame_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 600
-        width: 800
-        height: 600
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: frame_1
-      rect:
-        serializedVersion: 2
-        x: 800
-        y: 600
-        width: 800
-        height: 600
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: frame_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 800
-        height: 600
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: frame_3
-      rect:
-        serializedVersion: 2
-        x: 800
-        y: 0
-        width: 800
-        height: 600
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
+    sprites: []
     outline: []
     physicsShape: []
-  spritePackingTag: UI
+  spritePackingTag: Faces
   userData: 
   assetBundleName: 
   assetBundleVariant: 

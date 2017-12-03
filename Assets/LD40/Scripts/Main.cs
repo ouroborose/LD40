@@ -36,7 +36,8 @@ public class Main : Singleton<Main> {
 
     protected float m_rashGrowthTimer = 0.0f;
 
-    protected float m_sanity = 100.0f;
+    protected float m_currentSanity = 100.0f;
+    protected float m_targetSanity = 100.0f;
     protected float m_rashIntensity = 0.0f;
 
     override protected void Awake()
@@ -75,14 +76,22 @@ public class Main : Singleton<Main> {
 
     protected void UpdateSanity()
     {
-        m_sanity -= m_sanityLostScaler * m_rashIntensity * Time.deltaTime;
-        if(m_sanity < 0.0f)
+        m_targetSanity -= m_sanityLostScaler * m_rashIntensity * Time.deltaTime;
+        if(m_targetSanity <= 0.0f)
         {
-            m_sanity = 0.0f;
+            m_targetSanity = 0.0f;
+        }
+
+        m_currentSanity = Mathf.Lerp(m_currentSanity, m_targetSanity, Time.deltaTime * 5.0f);
+        if (m_currentSanity <= 0.05f)
+        {
             // lose
+            m_currentSanity = 0.0f;
             SceneManager.LoadScene(0);
         }
-        m_uiManager.SetSanitySliderValue(m_sanity / MAX_SANITY);
+        m_uiManager.SetSanitySliderValue(m_currentSanity / MAX_SANITY);
+
+        
     }
 
     protected void UpdatePlayerControls()
@@ -148,10 +157,10 @@ public class Main : Singleton<Main> {
                 if (m_itchPoints.Contains(rash))
                 {
                     itchHit = true;
-                    m_sanity += MAX_SANITY * m_itchSanityRecovery;
-                    if(m_sanity > MAX_SANITY)
+                    m_targetSanity += MAX_SANITY * m_itchSanityRecovery;
+                    if(m_targetSanity > MAX_SANITY)
                     {
-                        m_sanity = MAX_SANITY;
+                        m_targetSanity = MAX_SANITY;
                     }
 
                     // give sanity

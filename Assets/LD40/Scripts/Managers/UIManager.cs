@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
     public Slider m_sanitySlider;
+
+    public RectTransform m_textContainer;
     public TextMeshProUGUI m_feedbackText;
+
+    public Image m_face;
+
+    public Sprite[] m_satisfiedFaceSprites;
+    public Sprite[] m_faceSprites;
 
     public float m_itchFeedbackShowTime = 0.5f;
     public string[] m_itchFeedback;
@@ -31,10 +39,8 @@ public class UIManager : MonoBehaviour
     
     protected string[][] directionHints;
 
-    protected float m_showTimer = 0.0f;
+    protected float m_feedbackShowTimer = 0.0f;
     protected int m_lastTextIndex = -1;
-    
-    protected float m_desiredSanity = 1.0f;
 
     protected FeedBackType m_lastFeedBackType = FeedBackType.NONE;
 
@@ -51,24 +57,34 @@ public class UIManager : MonoBehaviour
 
     protected void Update()
     {
-        m_showTimer -= Time.deltaTime;
-
-        m_sanitySlider.value = Mathf.Lerp(m_sanitySlider.value, m_desiredSanity, Time.deltaTime * 5.0f);
+        m_feedbackShowTimer -= Time.deltaTime;
+        
+        if(m_lastFeedBackType != FeedBackType.ITCH_FEEDBACK || m_feedbackShowTimer <= 0)
+        {
+            m_face.sprite = m_faceSprites[m_faceSprites.Length - Mathf.CeilToInt(m_sanitySlider.value * m_faceSprites.Length)];
+        }
     }
 
     public void SetSanitySliderValue(float value)
     {
-        m_desiredSanity = value;
+        value = Mathf.Clamp01(value);
+        m_sanitySlider.value = value;
     }
 
     public void DoItchFeedback()
     {
         ShowFeedback(m_itchFeedback, m_itchFeedbackShowTime, m_lastFeedBackType != FeedBackType.ITCH_FEEDBACK);
+        m_face.sprite = m_satisfiedFaceSprites[Random.Range(0, m_satisfiedFaceSprites.Length)];
         m_lastFeedBackType = FeedBackType.ITCH_FEEDBACK;
     }
 
     public void GiveHint(FeedBackType direction)
     {
+        if(m_feedbackShowTimer > 0)
+        {
+            return;
+        }
+
         int stringIndex = (int)direction;
         if(stringIndex >= 0)
         {
@@ -79,12 +95,15 @@ public class UIManager : MonoBehaviour
 
     public void ShowFeedback(string[] strings, float showTime = 0.0f, bool forceShow = false)
     {
-        if(!forceShow && m_showTimer > 0.0f)
+        if(!forceShow && m_feedbackShowTimer > 0.0f)
         {
             return;
         }
 
-        m_showTimer = showTime;
+        m_textContainer.localScale = Vector3.zero;
+        m_textContainer.DOScale(Vector3.one, showTime * 0.25f).SetEase(Ease.OutBack);
+
+        m_feedbackShowTimer = showTime;
         int textIndex = Random.Range(0, strings.Length);
         while(textIndex == m_lastTextIndex && strings.Length > 1)
         {

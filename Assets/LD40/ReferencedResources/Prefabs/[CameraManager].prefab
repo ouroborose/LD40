@@ -128,7 +128,7 @@ MonoBehaviour:
   m_maxPanSpeed: 0.25
   m_panUpDownThreshold: 0.1
   m_panLeftRightThreshold: 0.1
-  m_shakeIntensity: 1
+  m_shakeIntensity: 2
   m_cameraBounds: {x: 25, y: 20, z: 0}
 --- !u!124 &124532566508016456
 Behaviour:
