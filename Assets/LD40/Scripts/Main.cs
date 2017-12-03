@@ -7,7 +7,10 @@ public class Main : Singleton<Main> {
     public static RaycastHit2D[] s_raycastHits = new RaycastHit2D[100];
 
     public CameraManager m_cameraManager;
+    public UIManager m_uiManager;
     public Hand m_hand;
+    public float m_handRotationSpeed = 2.0f;
+
     public float m_scratchDeltaThreshold = 0.25f;
     public GameObject m_rashPrefab;
 
@@ -19,6 +22,8 @@ public class Main : Singleton<Main> {
 
     protected float m_scratchDelta = 0;
     protected Vector3 m_lastScratchPos;
+
+    protected float m_sanity = 100.0f;
 
     override protected void Awake()
     {
@@ -66,8 +71,12 @@ public class Main : Singleton<Main> {
             }
             m_lastScratchPos = currentScratchPos;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else
         {
+            Vector3 handUp = CameraManager.MainCamera.transform.position - m_hand.transform.position;
+            handUp.z = 0;
+            handUp.Normalize();
+            m_hand.transform.rotation = Quaternion.Lerp(m_hand.transform.rotation, Quaternion.LookRotation(transform.forward, handUp), Time.deltaTime * m_handRotationSpeed);
             m_hand.StopScratching();
         }
 
@@ -107,12 +116,14 @@ public class Main : Singleton<Main> {
                     else
                     {
                         // give itch relief feedback
+                        m_uiManager.DoItchFeedback();
 
                     }
                 }
                 else
                 {
                     // give itch point hint
+                    GiveHint(pos);
                 }
             }
         }
@@ -196,22 +207,22 @@ public class Main : Singleton<Main> {
             {
                 if(delta.x < 0)
                 {
-                    // hint left
+                    m_uiManager.GiveHint(UIManager.HintDirection.LEFT);
                 }
                 else
                 {
-                    // hint right
+                    m_uiManager.GiveHint(UIManager.HintDirection.RIGHT);
                 }
             }
             else
             {
                 if (delta.y < 0)
                 {
-                    // hint down
+                    m_uiManager.GiveHint(UIManager.HintDirection.DOWN);
                 }
                 else
                 {
-                    // hint up
+                    m_uiManager.GiveHint(UIManager.HintDirection.UP);
                 }
             }
         }

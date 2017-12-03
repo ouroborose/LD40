@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Rash : MonoBehaviour
 {
+    public const float INITIAL_ALPHA = 0.1f;
+    public const float DELTA_ALPHA = 0.7f;
+
     public const int MIN_ITCH_AMOUNT = 3;
     public const int MAX_ITCH_AMOUNT = 10;
 
     public const int MIN_SPREAD_SCRATCHES = 1;
     public const int MAX_SPREAD_SCRATCHES = 1;
 
-    public const float RASH_GROWTH_AMOUNT = 0.1f;
+    public const float RASH_GROWTH_AMOUNT = 0.05f;
     public const float MAX_SIZE = 2.0f;
 
     public bool m_scratchedThisFrame = false;
@@ -28,6 +31,7 @@ public class Rash : MonoBehaviour
     {
         m_sprites = GetComponentsInChildren<SpriteRenderer>();
         RandomizeNextSpreadRequirement();
+        SetAlpha(INITIAL_ALPHA);
     }
 
     public void RandomizeNextSpreadRequirement()
@@ -71,7 +75,7 @@ public class Rash : MonoBehaviour
         {
             m_currentSize = MAX_SIZE;
         }
-        SetAlpha(0.25f + 0.5f*m_currentSize/MAX_SIZE);
+        SetAlpha(INITIAL_ALPHA + DELTA_ALPHA*m_currentSize/MAX_SIZE);
         transform.localScale = Vector3.one * m_currentSize;
         return isMaxSize;
     }

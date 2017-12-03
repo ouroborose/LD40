@@ -82,7 +82,7 @@ AnimatorState:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Scratch
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101780970335007656}
@@ -95,7 +95,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 413c6a0b22a570f4595a667c30e761fc, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2043012122be5bd459fe4693a6254391, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

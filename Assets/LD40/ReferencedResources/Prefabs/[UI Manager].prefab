@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4786857331535196}
+  - component: {fileID: 114073080657082948}
   m_Layer: 0
   m_Name: '[UI Manager]'
   m_TagString: Untagged
@@ -106,6 +107,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114073080657082948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1043531506762292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12e922ba855409943a827043e6db6f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_feedbackText: {fileID: 114183014942891506}
+  m_itchFeedback:
+  - Oh yesSss~!
+  - Yes yes yes!
+  - So gooOOod!
+  - Keep scratching!
+  m_upHints:
+  - Up!
+  - Higher!
+  - Up more!
+  - Get up there!
+  m_downHints:
+  - Down!
+  - Lower!
+  - Down more!
+  - Get down there!
+  m_leftHints:
+  - Left!
+  - Left more!
+  - Your other right!
+  - More left!
+  m_rightHints:
+  - Right!
+  - Right more!
+  - Your other left!
+  - More right!
+  m_currentHintDirection: -1
 --- !u!114 &114090575505011258
 MonoBehaviour:
   m_ObjectHideFlags: 1
