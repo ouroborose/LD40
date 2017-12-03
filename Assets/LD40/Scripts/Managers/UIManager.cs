@@ -18,8 +18,9 @@ public class UIManager : MonoBehaviour
     public string[] m_leftHints;
     public string[] m_rightHints;
 
-    public enum HintDirection : int
+    public enum FeedBackType : int
     {
+        ITCH_FEEDBACK = -2,
         NONE = -1,
         UP = 0 ,
         DOWN,
@@ -34,6 +35,8 @@ public class UIManager : MonoBehaviour
     protected int m_lastTextIndex = -1;
     
     protected float m_desiredSanity = 1.0f;
+
+    protected FeedBackType m_lastFeedBackType = FeedBackType.NONE;
 
     protected void Awake()
     {
@@ -60,17 +63,23 @@ public class UIManager : MonoBehaviour
 
     public void DoItchFeedback()
     {
-        ShowFeedback(m_itchFeedback, m_itchFeedbackShowTime);
+        ShowFeedback(m_itchFeedback, m_itchFeedbackShowTime, m_lastFeedBackType != FeedBackType.ITCH_FEEDBACK);
+        m_lastFeedBackType = FeedBackType.ITCH_FEEDBACK;
     }
 
-    public void GiveHint(HintDirection direction)
+    public void GiveHint(FeedBackType direction)
     {
-        ShowFeedback(directionHints[(int)direction], m_hintShowTime);
+        int stringIndex = (int)direction;
+        if(stringIndex >= 0)
+        {
+            ShowFeedback(directionHints[stringIndex], m_hintShowTime);
+            m_lastFeedBackType = direction;
+        }
     }
 
-    public void ShowFeedback(string[] strings, float showTime = 0.0f)
+    public void ShowFeedback(string[] strings, float showTime = 0.0f, bool forceShow = false)
     {
-        if(m_showTimer > 0.0f)
+        if(!forceShow && m_showTimer > 0.0f)
         {
             return;
         }

@@ -18,6 +18,9 @@ public class Main : Singleton<Main> {
 
     public List<Rash> m_rashes = new List<Rash>();
 
+    public float m_timeBetweenRashGrowth = 1.0f;
+    public float m_rashGrowthIntensityDivider = 5.0f;
+
     public float m_itchSanityRecovery = 0.1f;
     public float m_sanityLostScaler = 1.0f;
     public float m_itchRashIntensityValue = 0.1f;
@@ -31,8 +34,9 @@ public class Main : Singleton<Main> {
     protected float m_scratchDelta = 0;
     protected Vector3 m_lastScratchPos;
 
-    protected float m_sanity = 100.0f;
+    protected float m_rashGrowthTimer = 0.0f;
 
+    protected float m_sanity = 100.0f;
     protected float m_rashIntensity = 0.0f;
 
     override protected void Awake()
@@ -44,7 +48,6 @@ public class Main : Singleton<Main> {
         {
             AddItch(m_rashes[i]);
         }
-
     }
 
     protected void Update()
@@ -52,7 +55,22 @@ public class Main : Singleton<Main> {
         m_cameraManager.UpdateCamera();
         UpdatePlayerControls();
 
+        UpdateRash();
         UpdateSanity();
+    }
+
+    protected void UpdateRash()
+    {
+        m_rashGrowthTimer += Time.deltaTime;
+        if(m_rashGrowthTimer > m_timeBetweenRashGrowth)
+        {
+            m_rashGrowthTimer -= m_timeBetweenRashGrowth;
+            int numRashesToGrow = Mathf.CeilToInt(m_rashIntensity / m_rashGrowthIntensityDivider);
+            for(int i = 0; i < numRashesToGrow; ++i)
+            {
+                Scratch(m_rashes[Random.Range(0, m_rashes.Count)]);
+            }
+        }
     }
 
     protected void UpdateSanity()
@@ -165,19 +183,19 @@ public class Main : Singleton<Main> {
 
         if(itchHit)
         {
-            m_cameraManager.Shake(0.3f);
+            m_cameraManager.Shake(1.0f);
         }
         else if(rashHits >= 2)
         {
-            m_cameraManager.Shake(0.15f);
+            m_cameraManager.Shake(0.5f);
         }
         else if(rashHits >= 1)
         {
-            m_cameraManager.Shake(0.075f);
+            m_cameraManager.Shake(0.25f);
         }
         else
         {
-            m_cameraManager.Shake(0.01f);
+            m_cameraManager.Shake(0.15f);
         }
     }
 
@@ -256,22 +274,22 @@ public class Main : Singleton<Main> {
             {
                 if(delta.x < 0)
                 {
-                    m_uiManager.GiveHint(UIManager.HintDirection.LEFT);
+                    m_uiManager.GiveHint(UIManager.FeedBackType.LEFT);
                 }
                 else
                 {
-                    m_uiManager.GiveHint(UIManager.HintDirection.RIGHT);
+                    m_uiManager.GiveHint(UIManager.FeedBackType.RIGHT);
                 }
             }
             else
             {
                 if (delta.y < 0)
                 {
-                    m_uiManager.GiveHint(UIManager.HintDirection.DOWN);
+                    m_uiManager.GiveHint(UIManager.FeedBackType.DOWN);
                 }
                 else
                 {
-                    m_uiManager.GiveHint(UIManager.HintDirection.UP);
+                    m_uiManager.GiveHint(UIManager.FeedBackType.UP);
                 }
             }
         }

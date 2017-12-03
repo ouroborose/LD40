@@ -60,8 +60,10 @@ MonoBehaviour:
     type: 2}
   m_rashes:
   - {fileID: 0}
+  m_timeBetweenRashGrowth: 2
+  m_rashGrowthIntensityDivider: 20
   m_itchSanityRecovery: 0.1
   m_sanityLostScaler: 1
   m_itchRashIntensityValue: 0.1
   m_spreadRashIntensityValue: 0.01
-  m_scratchRashIntensityValue: 0.005
+  m_scratchRashIntensityValue: 0.001

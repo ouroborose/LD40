@@ -14,6 +14,7 @@ public class Rash : MonoBehaviour
     public const int MAX_SPREAD_SCRATCHES = 1;
 
     public const float RASH_GROWTH_AMOUNT = 0.05f;
+    public const float INITIAL_SIZE = 1.0f;
     public const float MAX_SIZE = 2.0f;
 
     public bool m_scratchedThisFrame = false;
@@ -75,7 +76,7 @@ public class Rash : MonoBehaviour
         {
             m_currentSize = MAX_SIZE;
         }
-        SetAlpha(INITIAL_ALPHA + DELTA_ALPHA*m_currentSize/MAX_SIZE);
+        SetAlpha(INITIAL_ALPHA + DELTA_ALPHA*((m_currentSize - INITIAL_SIZE)/(MAX_SIZE - INITIAL_SIZE)));
         transform.localScale = Vector3.one * m_currentSize;
         return isMaxSize;
     }
