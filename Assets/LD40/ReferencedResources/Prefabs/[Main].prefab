@@ -52,7 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_cameraManager: {fileID: 0}
-  m_tileManager: {fileID: 0}
   m_hand: {fileID: 0}
-  m_playAreaWidth: 100
-  m_playAreaHeight: 100
+  m_rashPrefab: {fileID: 1099858982416514, guid: 19fd5e59b672efe4784b8e9d51570c93,
+    type: 2}
+  m_rashes:
+  - {fileID: 0}
