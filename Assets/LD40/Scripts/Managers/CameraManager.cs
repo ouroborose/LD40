@@ -11,6 +11,9 @@ public class CameraManager : MonoBehaviour {
 
     public Vector3 m_cameraBounds;
 
+    protected float m_shakeIntensity = 0.05f;
+    protected float m_shakeDuration = 0.0f;
+
     protected void Awake()
     {
         MainCamera = Camera.main;
@@ -19,6 +22,12 @@ public class CameraManager : MonoBehaviour {
     protected void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(Vector3.zero, m_cameraBounds);
+    }
+
+    public void Shake(float intensity = 0.05f, float duration = 0.25f)
+    {
+        m_shakeIntensity = intensity;
+        m_shakeDuration = duration;
     }
 
     public void UpdateCamera()
@@ -57,5 +66,14 @@ public class CameraManager : MonoBehaviour {
         pos.y = Mathf.Clamp(pos.y, -halfYBounds, halfYBounds);
         transform.position = pos;
         
+        if(m_shakeDuration > 0.0f)
+        {
+            MainCamera.transform.localPosition = Vector3.Lerp(MainCamera.transform.localPosition, Random.onUnitSphere * m_shakeIntensity, Time.deltaTime * 10.0f);
+            m_shakeDuration -= Time.deltaTime;
+        }
+        else
+        {
+            MainCamera.transform.localPosition = Vector3.Lerp(MainCamera.transform.localPosition, Vector3.zero, Time.deltaTime);
+        }
     }
 }

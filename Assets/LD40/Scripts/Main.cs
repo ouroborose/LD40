@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Main : Singleton<Main> {
+    public const float MAX_SANITY = 100.0f;
 
     public static RaycastHit2D[] s_raycastHits = new RaycastHit2D[100];
 
@@ -16,6 +18,12 @@ public class Main : Singleton<Main> {
 
     public List<Rash> m_rashes = new List<Rash>();
 
+    public float m_itchSanityRecovery = 0.1f;
+    public float m_sanityLostScaler = 1.0f;
+    public float m_itchRashIntensityValue = 0.1f;
+    public float m_spreadRashIntensityValue = 0.01f;
+    public float m_scratchRashIntensityValue = 0.001f;
+
     protected Plane m_interactionPlane;
     protected List<Rash> m_scratchedThisFrame = new List<Rash>();
     protected List<Rash> m_itchPoints = new List<Rash>();
@@ -24,6 +32,8 @@ public class Main : Singleton<Main> {
     protected Vector3 m_lastScratchPos;
 
     protected float m_sanity = 100.0f;
+
+    protected float m_rashIntensity = 0.0f;
 
     override protected void Awake()
     {
@@ -41,6 +51,20 @@ public class Main : Singleton<Main> {
     {
         m_cameraManager.UpdateCamera();
         UpdatePlayerControls();
+
+        UpdateSanity();
+    }
+
+    protected void UpdateSanity()
+    {
+        m_sanity -= m_sanityLostScaler * m_rashIntensity * Time.deltaTime;
+        if(m_sanity < 0.0f)
+        {
+            m_sanity = 0.0f;
+            // lose
+            SceneManager.LoadScene(0);
+        }
+        m_uiManager.SetSanitySliderValue(m_sanity / MAX_SANITY);
     }
 
     protected void UpdatePlayerControls()
@@ -93,6 +117,7 @@ public class Main : Singleton<Main> {
         m_hand.DoScratchFeedback();
         int hitCount = Physics2D.RaycastNonAlloc(pos, Vector2.zero, s_raycastHits);
         int rashHits = 0;
+        bool itchHit = false;
         for (int i = 0; i < hitCount; ++i)
         {
             RaycastHit2D hit = s_raycastHits[i];
@@ -104,20 +129,24 @@ public class Main : Singleton<Main> {
 
                 if (m_itchPoints.Contains(rash))
                 {
+                    itchHit = true;
+                    m_sanity += MAX_SANITY * m_itchSanityRecovery;
+                    if(m_sanity > MAX_SANITY)
+                    {
+                        m_sanity = MAX_SANITY;
+                    }
+
                     // give sanity
                     rash.ReduceItch();
+                    // give itch relief feedback
+                    m_uiManager.DoItchFeedback();
+
                     if (rash.m_itchAmount <= 0)
                     {
                         m_itchPoints.Remove(rash);
 
                         // pick new itch point
                         AddItch(m_rashes[Random.Range(0, m_rashes.Count)]);
-                    }
-                    else
-                    {
-                        // give itch relief feedback
-                        m_uiManager.DoItchFeedback();
-
                     }
                 }
                 else
@@ -133,12 +162,30 @@ public class Main : Singleton<Main> {
             // spawn new rash here
             SpawnRash(pos);
         }
+
+        if(itchHit)
+        {
+            m_cameraManager.Shake(0.3f);
+        }
+        else if(rashHits >= 2)
+        {
+            m_cameraManager.Shake(0.15f);
+        }
+        else if(rashHits >= 1)
+        {
+            m_cameraManager.Shake(0.075f);
+        }
+        else
+        {
+            m_cameraManager.Shake(0.01f);
+        }
     }
 
     public void AddItch(Rash rash)
     {
         rash.RandomizeItchAmount();
         m_itchPoints.Add(rash);
+        m_rashIntensity += m_itchRashIntensityValue;
     }
 
     public void Scratch(Rash rash)
@@ -151,6 +198,7 @@ public class Main : Singleton<Main> {
         rash.m_scratchedThisFrame = true;
         rash.Scratch();
         m_scratchedThisFrame.Add(rash);
+        m_rashIntensity += m_scratchRashIntensityValue;
     }
 
     public void TryToSpreadRash(Rash source, float minRadius, float maxRadius)
@@ -178,7 +226,8 @@ public class Main : Singleton<Main> {
                 if (rashHits <= 0)
                 {
                     // hit skin so spawn a new rash
-                    SpawnRash(spawnPos); 
+                    SpawnRash(spawnPos);
+                    m_rashIntensity += m_spreadRashIntensityValue;
                 }
                 return;
             }

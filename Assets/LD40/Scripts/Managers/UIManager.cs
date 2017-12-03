@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
 {
+    public Slider m_sanitySlider;
     public TextMeshProUGUI m_feedbackText;
 
     public float m_itchFeedbackShowTime = 0.5f;
@@ -30,6 +32,8 @@ public class UIManager : MonoBehaviour
 
     protected float m_showTimer = 0.0f;
     protected int m_lastTextIndex = -1;
+    
+    protected float m_desiredSanity = 1.0f;
 
     protected void Awake()
     {
@@ -45,6 +49,13 @@ public class UIManager : MonoBehaviour
     protected void Update()
     {
         m_showTimer -= Time.deltaTime;
+
+        m_sanitySlider.value = Mathf.Lerp(m_sanitySlider.value, m_desiredSanity, Time.deltaTime * 5.0f);
+    }
+
+    public void SetSanitySliderValue(float value)
+    {
+        m_desiredSanity = value;
     }
 
     public void DoItchFeedback()
