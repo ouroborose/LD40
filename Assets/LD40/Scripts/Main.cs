@@ -19,14 +19,18 @@ public class Main : Singleton<Main> {
 
     public List<Rash> m_rashes = new List<Rash>();
 
+    public float m_remainingDuration = 60.0f;
+
     public float m_timeBetweenRashGrowth = 1.0f;
     public float m_rashGrowthIntensityDivider = 5.0f;
 
     public float m_itchSanityRecovery = 0.1f;
-    public float m_sanityLostScaler = 1.0f;
+    public float m_minSanityLoss = 1.0f;
+    public float m_sanityLossScaler = 1.0f;
     public float m_itchRashIntensityValue = 0.1f;
     public float m_spreadRashIntensityValue = 0.01f;
     public float m_scratchRashIntensityValue = 0.001f;
+    public float m_itchMissSanityPenalty = 0.01f;
 
     protected Plane m_interactionPlane;
     protected List<Rash> m_scratchedThisFrame = new List<Rash>();
@@ -41,6 +45,8 @@ public class Main : Singleton<Main> {
     protected float m_targetSanity = 100.0f;
     protected float m_rashIntensity = 0.0f;
 
+    protected float m_totalDuration;
+
     public enum GameState
     {
         Title,
@@ -49,7 +55,7 @@ public class Main : Singleton<Main> {
         Lose,
     }
 
-    protected GameState m_currentGameState = GameState.Title;
+    public GameState m_currentGameState = GameState.Title;
 
     override protected void Awake()
     {
@@ -60,6 +66,8 @@ public class Main : Singleton<Main> {
         {
             AddItch(m_rashes[i]);
         }
+
+        m_totalDuration = m_remainingDuration;
     }
 
     protected void Update()
@@ -78,15 +86,30 @@ public class Main : Singleton<Main> {
             case GameState.Game:
                 UpdateRash();
                 UpdateSanity();
+
+                UpdateProgress();
                 break;
             case GameState.Lose:
-                SceneManager.LoadScene(0);
+                // show lose screen
+                //SceneManager.LoadScene(0);
+                m_cameraManager.Shake(3);
                 break;
             case GameState.Win:
+                // show win screen
                 break;
         }
 
         m_cameraManager.UpdateCamera();
+    }
+
+    protected void UpdateProgress()
+    {
+        m_remainingDuration -= Time.deltaTime;
+        if (m_remainingDuration <= 0.0f)
+        {
+            m_currentGameState = GameState.Win;
+        }
+        m_uiManager.SetProgressIndicator(1.0f - m_remainingDuration / m_totalDuration);
     }
 
     protected void UpdateRash()
@@ -105,7 +128,7 @@ public class Main : Singleton<Main> {
 
     protected void UpdateSanity()
     {
-        m_targetSanity -= m_sanityLostScaler * m_rashIntensity * Time.deltaTime;
+        m_targetSanity -= (m_minSanityLoss + m_sanityLossScaler * m_rashIntensity) * Time.deltaTime;
         if(m_targetSanity <= 0.0f)
         {
             m_targetSanity = 0.0f;
@@ -170,6 +193,10 @@ public class Main : Singleton<Main> {
 
     public void HandleScratch(Vector3 pos)
     {
+        if(m_currentGameState != GameState.Game)
+        {
+            return;
+        }
 
         int hitCount = Physics2D.OverlapPointNonAlloc(pos, s_collider2Ds);
         int rashHits = 0;
@@ -238,6 +265,11 @@ public class Main : Singleton<Main> {
         else
         {
             m_cameraManager.Shake(0.15f);
+        }
+
+        if(!itchHit)
+        {
+            m_targetSanity -= m_itchMissSanityPenalty;
         }
     }
 

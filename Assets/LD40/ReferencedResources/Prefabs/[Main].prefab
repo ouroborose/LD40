@@ -60,10 +60,13 @@ MonoBehaviour:
   - {fileID: 1300183839546432, guid: d45755b76d6c05441be2af04a7a9b0f3, type: 2}
   m_rashes:
   - {fileID: 0}
-  m_timeBetweenRashGrowth: 2
+  m_remainingDuration: 180
+  m_timeBetweenRashGrowth: 0.5
   m_rashGrowthIntensityDivider: 20
   m_itchSanityRecovery: 0.1
-  m_sanityLostScaler: 1
-  m_itchRashIntensityValue: 0.1
+  m_minSanityLoss: 5
+  m_sanityLossScaler: 1
+  m_itchRashIntensityValue: 0.01
   m_spreadRashIntensityValue: 0.01
-  m_scratchRashIntensityValue: 0.001
+  m_scratchRashIntensityValue: 0
+  m_currentGameState: 0
