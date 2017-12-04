@@ -185,7 +185,7 @@ GameObject:
   m_PrefabParentObject: {fileID: 1182219290112492, guid: d45755b76d6c05441be2af04a7a9b0f3,
     type: 2}
   m_PrefabInternal: {fileID: 333733400}
---- !u!58 &139187305
+--- !u!58 &139187306
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -451,7 +451,7 @@ Prefab:
     - target: {fileID: 224794107152451850, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: 3333.9993
+      value: 5140.4795
       objectReference: {fileID: 0}
     - target: {fileID: 224664694020878030, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
@@ -470,23 +470,28 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 224075964314348904, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -5.0000076
+      objectReference: {fileID: 0}
+    - target: {fileID: 224075964314348904, guid: daf9557834064474ca6bd0b556dda733,
+        type: 2}
       propertyPath: m_LocalPosition.y
-      value: -10
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 224060766310162338, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: 278
+      value: 371.5
       objectReference: {fileID: 0}
     - target: {fileID: 224060766310162338, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_LocalPosition.y
-      value: 208.5
+      value: 278.5
       objectReference: {fileID: 0}
     - target: {fileID: 224794107152451850, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 3195.0393
+      value: 5001.5195
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: daf9557834064474ca6bd0b556dda733, type: 2}

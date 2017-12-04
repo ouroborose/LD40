@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: ecb38cc9f6490fd4585bf44d6fdd7e10
+timeCreated: 1512353137
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Chicken Scratch V1
+  fontNames:
+  - Chicken Scratch V1
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
