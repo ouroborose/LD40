@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Main : Singleton<Main> {
     public const float MAX_SANITY = 100.0f;
+    public const int MAX_SPREAD_DEPTH = 50;
 
-    public static RaycastHit2D[] s_raycastHits = new RaycastHit2D[100];
+    public static Collider2D[] s_collider2Ds = new Collider2D[10];
 
     public CameraManager m_cameraManager;
     public UIManager m_uiManager;
@@ -14,7 +15,7 @@ public class Main : Singleton<Main> {
     public float m_handRotationSpeed = 2.0f;
 
     public float m_scratchDeltaThreshold = 0.25f;
-    public GameObject m_rashPrefab;
+    public GameObject[] m_rashPrefabs;
 
     public List<Rash> m_rashes = new List<Rash>();
 
@@ -40,6 +41,16 @@ public class Main : Singleton<Main> {
     protected float m_targetSanity = 100.0f;
     protected float m_rashIntensity = 0.0f;
 
+    public enum GameState
+    {
+        Title,
+        Game,
+        Win,
+        Lose,
+    }
+
+    protected GameState m_currentGameState = GameState.Title;
+
     override protected void Awake()
     {
         base.Awake();
@@ -53,11 +64,29 @@ public class Main : Singleton<Main> {
 
     protected void Update()
     {
-        m_cameraManager.UpdateCamera();
+
         UpdatePlayerControls();
 
-        UpdateRash();
-        UpdateSanity();
+        switch (m_currentGameState)
+        {
+            case GameState.Title:
+                if(Input.GetMouseButton(0))
+                {
+                    m_currentGameState = GameState.Game;
+                }
+                break;
+            case GameState.Game:
+                UpdateRash();
+                UpdateSanity();
+                break;
+            case GameState.Lose:
+                SceneManager.LoadScene(0);
+                break;
+            case GameState.Win:
+                break;
+        }
+
+        m_cameraManager.UpdateCamera();
     }
 
     protected void UpdateRash()
@@ -87,7 +116,7 @@ public class Main : Singleton<Main> {
         {
             // lose
             m_currentSanity = 0.0f;
-            SceneManager.LoadScene(0);
+            m_currentGameState = GameState.Lose;
         }
         m_uiManager.SetSanitySliderValue(m_currentSanity / MAX_SANITY);
 
@@ -103,7 +132,7 @@ public class Main : Singleton<Main> {
         m_interactionPlane.Raycast(mouseRay, out d);
         
         m_hand.transform.position = mouseRay.GetPoint(d - 0.5f);
-
+        
         if (Input.GetMouseButtonDown(0))
         {
             m_hand.StartScratching();
@@ -141,18 +170,18 @@ public class Main : Singleton<Main> {
 
     public void HandleScratch(Vector3 pos)
     {
-        int hitCount = Physics2D.RaycastNonAlloc(pos, Vector2.zero, s_raycastHits);
+
+        int hitCount = Physics2D.OverlapPointNonAlloc(pos, s_collider2Ds);
         int rashHits = 0;
         bool itchHit = false;
         for (int i = 0; i < hitCount; ++i)
         {
-            RaycastHit2D hit = s_raycastHits[i];
-            Rash rash = hit.collider.GetComponentInParent<Rash>();
+            Collider2D collider = s_collider2Ds[i];
+            Rash rash = collider.GetComponentInParent<Rash>();
             if (rash != null)
             {
                 rashHits++;
                 Scratch(rash);
-
                 if (m_itchPoints.Contains(rash))
                 {
                     itchHit = true;
@@ -236,17 +265,22 @@ public class Main : Singleton<Main> {
     {
         Vector2 center = source.transform.position;
         int attempts = 0;
-        while(attempts < 50)
+        while(attempts < 2)
         {
+            if (Random.value > 0.5f)
+            {
+                return; // random chance each attempt to early out
+            }
+
             Vector2 spawnPos = center + Random.insideUnitCircle.normalized * Random.Range(minRadius, maxRadius);
-            int hits = Physics2D.RaycastNonAlloc(spawnPos, Vector2.zero, s_raycastHits);
+            int hits = Physics2D.OverlapPointNonAlloc(spawnPos, s_collider2Ds);
             if(hits > 0)
             {
                 int rashHits = 0;
                 for (int i = 0; i < hits; ++i)
                 {
-                    RaycastHit2D hit = s_raycastHits[i];
-                    Rash rash = hit.collider.GetComponentInParent<Rash>();
+                    Collider2D collider = s_collider2Ds[i];
+                    Rash rash = collider.GetComponentInParent<Rash>();
                     if (rash != null)
                     {
                         rashHits++;
@@ -269,7 +303,7 @@ public class Main : Singleton<Main> {
 
     public void SpawnRash(Vector3 pos)
     {
-        GameObject rashObj = Instantiate(m_rashPrefab, transform);
+        GameObject rashObj = Instantiate(m_rashPrefabs[Random.Range(0, m_rashPrefabs.Length)], transform);
         rashObj.transform.position = pos;
         rashObj.transform.Rotate(Vector3.forward, Random.value * 360.0f);
         Rash newRash = rashObj.GetComponent<Rash>();

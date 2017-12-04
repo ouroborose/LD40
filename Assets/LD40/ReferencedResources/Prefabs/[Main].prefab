@@ -56,8 +56,8 @@ MonoBehaviour:
   m_hand: {fileID: 0}
   m_handRotationSpeed: 5
   m_scratchDeltaThreshold: 1
-  m_rashPrefab: {fileID: 1099858982416514, guid: 19fd5e59b672efe4784b8e9d51570c93,
-    type: 2}
+  m_rashPrefabs:
+  - {fileID: 1300183839546432, guid: d45755b76d6c05441be2af04a7a9b0f3, type: 2}
   m_rashes:
   - {fileID: 0}
   m_timeBetweenRashGrowth: 2

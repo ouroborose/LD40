@@ -69,7 +69,7 @@ public class UIManager : MonoBehaviour
         
         if(m_lastFeedBackType != FeedBackType.ITCH_FEEDBACK || m_feedbackShowTimer <= 0)
         {
-            m_face.sprite = m_faceSprites[m_faceSprites.Length - Mathf.CeilToInt(m_sanitySlider.value * m_faceSprites.Length)];
+            m_face.sprite = m_faceSprites[m_faceSprites.Length - Mathf.CeilToInt(Mathf.Clamp01(m_sanitySlider.value + 0.01f) * m_faceSprites.Length)];
         }
     }
 
