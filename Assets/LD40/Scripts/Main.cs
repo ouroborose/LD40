@@ -77,14 +77,6 @@ public class Main : Singleton<Main> {
 
         switch (m_currentGameState)
         {
-            case GameState.Title:
-                /*
-                if(Input.GetMouseButton(0))
-                {
-                    m_currentGameState = GameState.Game;
-                }
-                */
-                break;
             case GameState.Game:
                 UpdateRash();
                 UpdateSanity();
@@ -97,11 +89,14 @@ public class Main : Singleton<Main> {
                 m_cameraManager.Shake(3);
                 break;
             case GameState.Win:
-                // show win screen
+
                 break;
         }
 
-        m_cameraManager.UpdateCamera();
+        if(m_currentGameState != GameState.Title)
+        {
+            m_cameraManager.UpdateCamera();
+        }
     }
 
 

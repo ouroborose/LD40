@@ -63,11 +63,11 @@ MonoBehaviour:
   m_remainingDuration: 180
   m_timeBetweenRashGrowth: 0.5
   m_rashGrowthIntensityDivider: 20
-  m_itchSanityRecovery: 0.1
+  m_itchSanityRecovery: 0.05
   m_minSanityLoss: 3
   m_sanityLossScaler: 1
-  m_itchRashIntensityValue: 0.01
-  m_spreadRashIntensityValue: 0.01
+  m_itchRashIntensityValue: 0.03
+  m_spreadRashIntensityValue: 0.02
   m_scratchRashIntensityValue: 0
   m_itchMissSanityPenalty: 0.01
   m_currentGameState: 0
