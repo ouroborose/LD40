@@ -78,10 +78,12 @@ public class Main : Singleton<Main> {
         switch (m_currentGameState)
         {
             case GameState.Title:
+                /*
                 if(Input.GetMouseButton(0))
                 {
                     m_currentGameState = GameState.Game;
                 }
+                */
                 break;
             case GameState.Game:
                 UpdateRash();
@@ -102,12 +104,30 @@ public class Main : Singleton<Main> {
         m_cameraManager.UpdateCamera();
     }
 
+
+    public void StartGame()
+    {
+        m_currentGameState = GameState.Game;
+    }
+
+    public void LoseGame()
+    {
+        m_currentGameState = GameState.Lose;
+        m_uiManager.HandleLose();
+    }
+
+    public void WinGame()
+    {
+        m_currentGameState = GameState.Win;
+        m_uiManager.HandleWin();
+    }
+    
     protected void UpdateProgress()
     {
         m_remainingDuration -= Time.deltaTime;
         if (m_remainingDuration <= 0.0f)
         {
-            m_currentGameState = GameState.Win;
+            WinGame();
         }
         m_uiManager.SetProgressIndicator(1.0f - m_remainingDuration / m_totalDuration);
     }
@@ -139,7 +159,7 @@ public class Main : Singleton<Main> {
         {
             // lose
             m_currentSanity = 0.0f;
-            m_currentGameState = GameState.Lose;
+            LoseGame();
         }
         m_uiManager.SetSanitySliderValue(m_currentSanity / MAX_SANITY);
 
@@ -193,12 +213,17 @@ public class Main : Singleton<Main> {
 
     public void HandleScratch(Vector3 pos)
     {
-        if(m_currentGameState != GameState.Game)
+        int hitCount = Physics2D.OverlapPointNonAlloc(pos, s_collider2Ds);
+        if (hitCount > 0)
+        {
+            m_hand.DoScratchFeedback();
+        }
+
+        if (m_currentGameState != GameState.Game)
         {
             return;
         }
 
-        int hitCount = Physics2D.OverlapPointNonAlloc(pos, s_collider2Ds);
         int rashHits = 0;
         bool itchHit = false;
         for (int i = 0; i < hitCount; ++i)
@@ -239,10 +264,7 @@ public class Main : Singleton<Main> {
             }
         }
 
-        if(hitCount > 0)
-        {
-            m_hand.DoScratchFeedback();
-        }
+        
 
         if (rashHits <= 0 && hitCount > 0)
         {

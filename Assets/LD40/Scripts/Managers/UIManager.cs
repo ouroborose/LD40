@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
 
@@ -9,6 +11,16 @@ public class UIManager : MonoBehaviour
 {
     public const float TEXT_SCRATCH_THRESHOLD = -3.0f;
     public const float TEXT_HIDE_THRESHOLD = -0.5f;
+
+    public Image m_fader;
+    public float m_fadeTime = 1.0f;
+
+    public RectTransform m_title;
+    public RectTransform m_lose;
+    public RectTransform m_loseFace;
+    public RectTransform m_win;
+    public RectTransform m_winFace;
+
     public Slider m_sanitySlider;
 
     public RectTransform m_textContainer;
@@ -81,6 +93,8 @@ public class UIManager : MonoBehaviour
             m_scratch4,
             m_scratch5,
         };
+
+        FadeIn();
     }
 
     protected void Update()
@@ -127,12 +141,75 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void FadeIn(UnityAction onFadeIn = null)
+    {
+        m_fader.DOFade(0, m_fadeTime).OnComplete(() =>
+        {
+            if(onFadeIn != null)
+            {
+                onFadeIn.Invoke();
+            }
+            m_fader.gameObject.SetActive(false);
+        });
+    }
+
+    public void FadeOut(UnityAction onFadeOut = null)
+    {
+        m_fader.gameObject.SetActive(true);
+        m_fader.DOFade(0, m_fadeTime).OnComplete(() =>
+        {
+            if (onFadeOut != null)
+            {
+                onFadeOut.Invoke();
+            }
+        });
+    }
+
+    public void StartGame()
+    {
+        Main.Instance.StartGame();
+        m_title.DOMoveY(Screen.height * 2, 0.5f).SetEase(Ease.InBack);
+    }
+
+    public void RestartGame()
+    {
+        FadeOut(() =>
+        {
+            SceneManager.LoadScene(0);
+        });
+    }
+
+    public void HandleLose()
+    {
+        m_sanitySlider.gameObject.SetActive(false);
+        m_lose.localPosition = Vector3.up * Screen.height * 2;
+        m_lose.gameObject.SetActive(true);
+        m_lose.DOMoveY(0, 0.5f).SetEase(Ease.OutBack);
+    }
+
+    public void HandleWin()
+    {
+        m_sanitySlider.gameObject.SetActive(false);
+        m_win.localPosition = Vector3.up * Screen.height * 2;
+        m_win.gameObject.SetActive(true);
+        m_win.DOMoveY(0, 0.5f).SetEase(Ease.OutBack);
+    }
+
     protected void AnimateFace()
     {
         float speedFactor = (m_faceIndex + 1);
         m_faceAnimationTimer += Time.deltaTime * m_faceAnimationSpeed * speedFactor;
         float angle = Mathf.Sin(m_faceAnimationTimer) * m_faceAnimationAngle * speedFactor;
         m_face.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        if(Main.Instance.m_currentGameState == Main.GameState.Lose)
+        {
+            m_loseFace.transform.localRotation = m_face.transform.localRotation;
+        }
+        else if(Main.Instance.m_currentGameState == Main.GameState.Win)
+        {
+            m_winFace.transform.localRotation = m_face.transform.localRotation;
+        }
     }
 
     public void SetProgressIndicator(float value)
