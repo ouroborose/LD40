@@ -89,7 +89,12 @@ public class Main : Singleton<Main> {
                 m_cameraManager.Shake(3);
                 break;
             case GameState.Win:
-
+                if(m_rashes.Count > 0)
+                {
+                    Rash rash = m_rashes[Random.Range(0, m_rashes.Count)];
+                    m_rashes.Remove(rash);
+                    Destroy(rash.gameObject);
+                }
                 break;
         }
 

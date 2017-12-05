@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     public RectTransform m_loseFace;
     public RectTransform m_win;
     public RectTransform m_winFace;
+    public RectTransform m_winStarburst;
 
     public Slider m_sanitySlider;
 
@@ -141,6 +142,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void OpenCASWebsite()
+    {
+        Application.OpenURL("https://cosmicadventuresquad.itch.io/");
+    }
+
     public void FadeIn(UnityAction onFadeIn = null)
     {
         m_fader.DOFade(0, m_fadeTime).OnComplete(() =>
@@ -209,6 +215,7 @@ public class UIManager : MonoBehaviour
         else if(Main.Instance.m_currentGameState == Main.GameState.Win)
         {
             m_winFace.transform.localRotation = m_face.transform.localRotation;
+            m_winStarburst.Rotate(Vector3.forward, Time.deltaTime * 60.0f);
         }
     }
 
