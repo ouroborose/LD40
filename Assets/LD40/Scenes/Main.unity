@@ -171,6 +171,11 @@ Prefab:
       propertyPath: m_rashes.Array.data[0]
       value: 
       objectReference: {fileID: 2030410609}
+    - target: {fileID: 114881477330825398, guid: 80aea3976220729408a7204608bfde00,
+        type: 2}
+      propertyPath: m_itchSanityRecovery
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 80aea3976220729408a7204608bfde00, type: 2}
   m_IsPrefabParent: 0
@@ -670,12 +675,12 @@ Prefab:
     - target: {fileID: 224060766310162338, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: 569
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 224060766310162338, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
       propertyPath: m_LocalPosition.y
-      value: 262.5
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 224991439697661666, guid: daf9557834064474ca6bd0b556dda733,
         type: 2}
